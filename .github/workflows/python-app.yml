@@ -8,7 +8,11 @@ on:
     branches: [ "main","feature/1" ]
   pull_request:
     branches: [ "main" ]
-
+env: 
+  PROJECT_ID:
+  GAR_LOCATION:
+  REPOSITORY:
+  IMAGE_NAME:
 permissions:
   contents: read
 
@@ -40,18 +44,10 @@ jobs:
 
           # Step 1: Authenticate to Google Cloud using Workload Identity Federation (OIDC)
       - name: Authenticate to Google Cloud
-        # This action fetches an OIDC token from GitHub and exchanges it for
-        # Google Cloud credentials (short-lived access tokens).
-        # It then sets up gcloud CLI to use these credentials.
         uses: google-github-actions/auth@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
-          # The Workload Identity Provider ID you set up in GCP.
-          # It includes your GCP project number, pool name, and provider name.
           workload_identity_provider: 'projects/${{ env.PROJECT_ID}}/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
-          # The service account email that the GitHub Actions runner will assume.
-          # This service account must have the necessary permissions to
-          # interact with Artifact Registry.
           service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
 
       # Step 2: Configure Docker to use the authenticated Google Cloud credentials

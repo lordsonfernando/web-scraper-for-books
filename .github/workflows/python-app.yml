@@ -82,7 +82,25 @@ roles/artifactregistry.writer: This allows the service account to push and pull 
 roles/iam.workloadIdentityUser: This role is granted on the service account itself, specifying which workload identity pool principal (your GitHub repository in this case) is allowed to impersonate this service account.
 By following these steps, your GitHub Actions workflow will be able to securely authenticate to Google Cloud and push your Docker images to Artifact Registry.
 
+jobs:
+  build:
+    # Allow the job to fetch a GitHub ID token
+    permissions:
+      id-token: write
+      contents: read
 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          create_credentials_file: true
+          workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID'
+          service_account: 'SERVICE_ACCOUNT_EMAIL'
 
 
 

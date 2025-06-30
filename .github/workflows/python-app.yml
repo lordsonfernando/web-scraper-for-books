@@ -8,7 +8,11 @@ on:
     branches: [ "main","feature/1" ]
   pull_request:
     branches: [ "main" ]
-
+env: 
+  PROJECT_ID: 'causal-galaxy-459115-v0'
+  GAR_LOCATION: 'asia-south1'
+  REPOSITORY: 'python-web-scraper'
+  IMAGE_NAME: 'web-scrape'
 permissions:
   contents: read
 
@@ -37,3 +41,68 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+
+          # Step 1: Authenticate to Google Cloud using Workload Identity Federation (OIDC)
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        workload_identity_provider: 'projects/${{ env.PROJECT_ID}}/locations/global/workloadIdentityPools/github-pool-test/providers/github-provider'
+        service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
+
+      # Step 2: Configure Docker to use the authenticated Google Cloud credentials
+    - name: Set up Docker for Google Artifact Registry
+      # This command configures Docker's credential helper to use `gcloud`
+      # for authentication when pushing or pulling images from the specified
+      # Artifact Registry location.
+      run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+    # # From here, your Docker build and push commands will automatically
+    #   # authenticate using the configured gcloud credentials.
+    # - name: Build Docker image
+    #   run: |
+    #     docker build -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest .
+
+    # - name: Push Docker image to Google Artifact Registry
+    #   run: |
+    #     docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
+# Explanation of Key Elements:
+# permissions: id-token: 'write': This is a crucial permission for the GitHub Actions job. It allows the workflow to request an OIDC token from GitHub. This token is then presented to Google Cloud for authentication.
+# google-github-actions/auth@v2 action:
+# This is a pre-built GitHub Action provided by Google.
+# It takes your project_id, workload_identity_provider, and service_account as inputs.
+# Internally, it handles the exchange of the GitHub OIDC token for short-lived Google Cloud credentials and configures the gcloud CLI environment on the runner with these credentials.
+# gcloud auth configure-docker <location>-docker.pkg.dev command:
+# This command configures Docker's credential helper. It tells Docker that whenever it needs to authenticate with an Artifact Registry host (e.g., asia-south1-docker.pkg.dev), it should use the gcloud CLI to get the necessary authentication tokens.
+# Since google-github-actions/auth@v2 has already set up gcloud with valid credentials, Docker can now seamlessly authenticate.
+# Required Google Cloud IAM Permissions for the Service Account:
+# The service_account you use in the google-github-actions/auth@v2 step must have the following IAM roles in your Google Cloud Project:
+
+# roles/artifactregistry.writer: This allows the service account to push and pull Docker images to/from your Artifact Registry repository.
+# roles/iam.workloadIdentityUser: This role is granted on the service account itself, specifying which workload identity pool principal (your GitHub repository in this case) is allowed to impersonate this service account.
+# By following these steps, your GitHub Actions workflow will be able to securely authenticate to Google Cloud and push your Docker images to Artifact Registry.
+
+# jobs:
+#   build:
+#     # Allow the job to fetch a GitHub ID token
+#     permissions:
+#       id-token: write
+#       contents: read
+
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - id: 'auth'
+#         name: 'Authenticate to Google Cloud'
+#         uses: 'google-github-actions/auth@v1'
+#         with:
+#           create_credentials_file: true
+#           workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID'
+#           service_account: 'SERVICE_ACCOUNT_EMAIL'
+
+
+
+
+

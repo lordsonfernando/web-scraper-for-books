@@ -5,7 +5,7 @@ name: Python application
 
 on:
   push:
-    branches: [ "main","feature/1" ]
+    branches: [ "main","feature/1", "lordsonfernando-patch-1" ]
   pull_request:
     branches: [ "main" ]
 env: 
@@ -15,7 +15,7 @@ env:
   IMAGE_NAME: 'web-scrape'
 permissions:
   contents: read
-
+  id-token: write
 jobs:
   build:
 

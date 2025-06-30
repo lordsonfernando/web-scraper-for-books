@@ -57,15 +57,15 @@ jobs:
       # Artifact Registry location.
       run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
 
-    # From here, your Docker build and push commands will automatically
-      # authenticate using the configured gcloud credentials.
-    - name: Build Docker image
-      run: |
-        docker build -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest .
+    # # From here, your Docker build and push commands will automatically
+    #   # authenticate using the configured gcloud credentials.
+    # - name: Build Docker image
+    #   run: |
+    #     docker build -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest .
 
-    - name: Push Docker image to Google Artifact Registry
-      run: |
-        docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
+    # - name: Push Docker image to Google Artifact Registry
+    #   run: |
+    #     docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:latest
 # Explanation of Key Elements:
 # permissions: id-token: 'write': This is a crucial permission for the GitHub Actions job. It allows the workflow to request an OIDC token from GitHub. This token is then presented to Google Cloud for authentication.
 # google-github-actions/auth@v2 action:

@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Assuming the code you provided is in a file named 'scraper.py'
-# If it's not, adjust the import accordingly.
+# If it's not, adjust the import accordingly .
 import scraper
 
 class TestScraper(unittest.TestCase):

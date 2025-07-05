@@ -46,9 +46,8 @@ jobs:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
-        project_id: ${{ env.PROJECT_ID }}
-        workload_identity_provider: 'projects/${{ env.PROJECT_ID}}/locations/global/workloadIdentityPools/github-pool-test/providers/github-provider'
-        service_account: 'github-actions-sa@${{ env.PROJECT_ID }}.iam.gserviceaccount.com'
+        workload_identity_provider: 'projects/263386665758/locations/global/workloadIdentityPools/github-pool-test/providers/github-provider'
+        service_account: 'github-actions-sa@causal-galaxy-459115-v0.iam.gserviceaccount.com'
 
       # Step 2: Configure Docker to use the authenticated Google Cloud credentials
     - name: Set up Docker for Google Artifact Registry

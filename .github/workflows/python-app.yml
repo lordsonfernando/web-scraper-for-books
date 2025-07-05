@@ -46,6 +46,7 @@ jobs:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v2
       with:
+        project_id: 'causal-galaxy-459115-v0'
         workload_identity_provider: 'projects/263386665758/locations/global/workloadIdentityPools/github-pool-test/providers/github-provider'
         service_account: 'github-actions-sa@causal-galaxy-459115-v0.iam.gserviceaccount.com'
 

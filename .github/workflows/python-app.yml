@@ -70,7 +70,7 @@ jobs:
 # Explanation of Key Elements:
 # permissions: id-token: 'write': This is a crucial permission for the GitHub Actions job. It allows the workflow to request an OIDC token from GitHub. This token is then presented to Google Cloud for authentication.
 # google-github-actions/auth@v2 action:
-# This is a pre-built GitHub Action provided by Google.
+# This is a pre-built GitHub Action provided by Google. google
 # It takes your project_id, workload_identity_provider, and service_account as inputs.
 # Internally, it handles the exchange of the GitHub OIDC token for short-lived Google Cloud credentials and configures the gcloud CLI environment on the runner with these credentials.
 # gcloud auth configure-docker <location>-docker.pkg.dev command:
